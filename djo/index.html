@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>23 Ans de Combo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0a0c1a;
+    --bg-panel:#12152b;
+    --bg-panel-2:#171b38;
+    --line:#2b2f56;
+    --text:#eef0fb;
+    --muted:#8b91b8;
+    --p1:#ff3d81;
+    --p2:#35e0c9;
+    --gold:#ffcf4d;
+    --font-display:'Press Start 2P', monospace;
+    --font-body:'Rubik', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{background:var(--bg);}
+  body{
+    margin:0;
+    padding-inline:16px;
+    color:var(--text);
+    font-family:var(--font-body);
+    background:var(--bg);
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3{text-wrap:balance; margin:0;}
+  p{margin:0;}
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+
+  /* ---------- CRT atmosphere ---------- */
+  .crt-overlay{
+    position:fixed; inset:0; pointer-events:none; z-index:5;
+    background:
+      radial-gradient(ellipse at 50% 0%, rgba(255,255,255,0.05), transparent 60%),
+      radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.55), transparent 55%),
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.16) 0px, rgba(0,0,0,0.16) 1px, transparent 2px, transparent 3px);
+    mix-blend-mode:overlay;
+    animation: flicker 6s infinite steps(30);
+  }
+  @keyframes flicker{
+    0%,97%,100%{opacity:1;}
+    98%{opacity:0.85;}
+    99%{opacity:0.95;}
+  }
+
+  .arcade{
+    max-width:920px;
+    margin:0 auto;
+    padding-block: max(28px, env(safe-area-inset-top, 0px)) max(48px, env(safe-area-inset-bottom, 0px));
+    display:flex;
+    flex-direction:column;
+    gap:64px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ---------- shared bits ---------- */
+  .eyebrow{
+    font-family:var(--font-display);
+    font-size:10px;
+    letter-spacing:0.12em;
+    color:var(--gold);
+    text-shadow:0 0 8px rgba(255,207,77,0.55);
+  }
+  .panel{
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--line);
+    border-radius:14px;
+    box-shadow:0 0 0 1px rgba(255,255,255,0.02) inset, 0 18px 40px -20px rgba(0,0,0,0.7);
+  }
+  .section-title{
+    font-family:var(--font-display);
+    font-size:clamp(14px, 3.4vw, 20px);
+    letter-spacing:0.06em;
+    color:var(--text);
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    padding-block:12px;
+    position:relative;
+  }
+  .combo-counter{
+    position:absolute;
+    top:0; right:0;
+    font-family:var(--font-display);
+    font-size:11px;
+    color:var(--gold);
+    text-align:right;
+    line-height:1.6;
+    font-variant-numeric:tabular-nums;
+    text-shadow:0 0 10px rgba(255,207,77,0.6);
+  }
+  .combo-counter b{font-size:20px; display:block;}
+  .hero-title{
+    font-family:var(--font-display);
+    font-size:clamp(28px, 9vw, 56px);
+    line-height:1.15;
+    color:var(--p1);
+    text-shadow:0 0 18px rgba(255,61,129,0.55), 0 0 2px rgba(255,61,129,0.9);
+  }
+  .hero-sub{
+    max-width:520px;
+    font-size:clamp(15px,2.6vw,18px);
+    color:var(--muted);
+    line-height:1.55;
+  }
+  .press-start{
+    font-family:var(--font-display);
+    font-size:11px;
+    color:var(--p2);
+    letter-spacing:0.08em;
+    animation:blink 1.4s steps(2) infinite;
+    text-shadow:0 0 10px rgba(53,224,201,0.6);
+  }
+  @keyframes blink{50%{opacity:0.15;}}
+
+  /* ---------- VS screen ---------- */
+  .vs-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:20px;
+  }
+  .vs-caption{color:var(--muted); font-size:13px; text-align:center;}
+  .vs-grid{
+    width:100%;
+    display:grid;
+    grid-template-columns:1fr auto 1fr;
+    gap:18px;
+    align-items:center;
+  }
+  .vs-mark{
+    font-family:var(--font-display);
+    font-size:clamp(18px,4vw,28px);
+    color:var(--gold);
+    text-shadow:0 0 12px rgba(255,207,77,0.6);
+  }
+  .fighter{
+    padding:22px 18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:12px;
+    text-align:center;
+  }
+  .fighter.p1{border-color:rgba(255,61,129,0.35);}
+  .fighter.p2{border-color:rgba(53,224,201,0.35);}
+  .badge{
+    width:64px; height:64px;
+    border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-display);
+    font-size:22px;
+    flex-shrink:0;
+  }
+  .fighter.p1 .badge{background:rgba(255,61,129,0.14); color:var(--p1); box-shadow:0 0 0 2px var(--p1), 0 0 18px rgba(255,61,129,0.45);}
+  .fighter.p2 .badge{background:rgba(53,224,201,0.14); color:var(--p2); box-shadow:0 0 0 2px var(--p2), 0 0 18px rgba(53,224,201,0.45);}
+  .fighter-name{font-family:var(--font-display); font-size:13px; letter-spacing:0.04em;}
+  .fighter.p1 .fighter-name{color:var(--p1);}
+  .fighter.p2 .fighter-name{color:var(--p2);}
+  .hp-row{width:100%; display:flex; flex-direction:column; gap:4px;}
+  .hp-label{display:flex; justify-content:space-between; font-size:10px; color:var(--muted); font-variant-numeric:tabular-nums;}
+  .hp-bar{height:9px; border-radius:5px; background:rgba(255,255,255,0.06); overflow:hidden; border:1px solid var(--line);}
+  .hp-fill{height:100%; width:100%; border-radius:5px;}
+  .fighter.p1 .hp-fill{background:linear-gradient(90deg, #ff3d81, #ffb0d1);}
+  .fighter.p2 .hp-fill{background:linear-gradient(90deg, #35e0c9, #b6fbef);}
+
+  /* ---------- combo history ---------- */
+  .stack{display:flex; flex-direction:column; gap:20px;}
+  .combo-card{padding:24px; display:flex; flex-direction:column; gap:10px;}
+  .combo-tag{
+    font-family:var(--font-display);
+    font-size:10px;
+    color:var(--p2);
+    letter-spacing:0.05em;
+  }
+  .combo-card p{color:var(--muted); line-height:1.65; font-size:15px;}
+  .combo-card p strong{color:var(--text); font-weight:600;}
+
+  /* ---------- stage select ---------- */
+  .stage-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
+  .stage-card{padding:22px; display:flex; flex-direction:column; gap:10px; align-items:flex-start;}
+  .stage-index{font-family:var(--font-display); font-size:10px; color:var(--gold);}
+  .stage-name{font-family:var(--font-display); font-size:14px; color:var(--text); line-height:1.5;}
+  .stage-card p{color:var(--muted); font-size:14px; line-height:1.55;}
+  .stage-note{color:var(--muted); font-size:14px; line-height:1.6; text-align:center;}
+  .stage-note strong{color:var(--text);}
+
+  /* ---------- date glitch ---------- */
+  .terminal{
+    padding:22px 24px;
+    font-family:'Press Start 2P', monospace;
+    font-size:11px;
+    line-height:2;
+    color:#8dffb0;
+    background:#060810;
+    overflow-x:auto;
+  }
+  .terminal .cursor{animation:blink 1s steps(2) infinite;}
+  .terminal-note{color:var(--muted); font-family:var(--font-body); font-size:14px; line-height:1.6; margin-top:14px;}
+
+  /* ---------- round 3 wish ---------- */
+  .wish{padding:30px 26px; text-align:center; display:flex; flex-direction:column; gap:14px; align-items:center;}
+  .wish-badge{
+    font-family:var(--font-display);
+    font-size:12px;
+    color:var(--bg);
+    background:var(--gold);
+    padding:6px 14px;
+    border-radius:20px;
+    box-shadow:0 0 20px rgba(255,207,77,0.5);
+  }
+  .wish p{max-width:540px; color:var(--muted); font-size:16px; line-height:1.65;}
+  .wish p strong{color:var(--text);}
+
+  /* ---------- footer ---------- */
+  footer{
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    color:var(--muted);
+    font-size:12px;
+    padding-bottom:8px;
+  }
+  footer .sign{font-family:var(--font-display); font-size:11px; color:var(--p1);}
+
+  @media (max-width:640px){
+    .arcade{gap:44px; padding-block: max(20px, env(safe-area-inset-top, 0px)) max(36px, env(safe-area-inset-bottom, 0px));}
+    .vs-grid{grid-template-columns:1fr; gap:14px;}
+    .vs-mark{order:2;}
+    .fighter.p2{order:3;}
+    .stage-grid{grid-template-columns:1fr;}
+    .combo-counter{position:static; text-align:center; margin-bottom:4px;}
+    .combo-card, .stage-card{padding:18px;}
+    .wish{padding:24px 18px;}
+    .terminal{padding:16px 14px; font-size:10px; line-height:1.85;}
+    .fighter{padding:18px 14px;}
+    .eyebrow{letter-spacing:0.08em;}
+  }
+
+  @media (max-width:380px){
+    .popup-toast{padding:14px 34px 14px 14px;}
+    .popup-text{font-size:14px;}
+    .ticker-bubble{padding:14px 18px 20px;}
+  }
+
+  /* ---------- easter-egg popup ---------- */
+  .popup-toast{
+    position:fixed;
+    right:16px;
+    bottom:max(16px, env(safe-area-inset-bottom, 0px));
+    left:16px;
+    margin-inline:auto;
+    max-width:340px;
+    z-index:20;
+    padding:16px 40px 16px 18px;
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:1px solid var(--gold);
+    border-radius:12px;
+    box-shadow:0 0 24px rgba(255,207,77,0.35), 0 18px 36px -18px rgba(0,0,0,0.8);
+    cursor:pointer;
+    transform:translateY(12px);
+    opacity:0;
+    transition:transform 0.35s ease, opacity 0.35s ease;
+  }
+  .popup-toast.is-visible{transform:translateY(0); opacity:1;}
+  .popup-eyebrow{
+    font-family:var(--font-display);
+    font-size:9px;
+    letter-spacing:0.08em;
+    color:var(--gold);
+    margin-bottom:6px;
+    display:block;
+  }
+  .popup-text{font-size:15px; color:var(--text); font-weight:600;}
+  .popup-close{
+    position:absolute;
+    top:8px; right:10px;
+    width:22px; height:22px;
+    border:none;
+    border-radius:50%;
+    background:transparent;
+    color:var(--muted);
+    font-size:16px;
+    line-height:1;
+    cursor:pointer;
+  }
+  .popup-close:hover{color:var(--text);}
+
+  /* ---------- ticker call-outs (K.O. impact) ---------- */
+  .ticker-chip{
+    position:fixed;
+    left:50%;
+    z-index:15;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    max-width:86vw;
+    text-align:center;
+    pointer-events:none;
+    animation:ko-impact 3.2s cubic-bezier(.2,.9,.25,1) forwards;
+  }
+  .ticker-bubble{
+    position:relative;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    padding:16px 24px 22px;
+    background:linear-gradient(180deg, var(--bg-panel), var(--bg-panel-2));
+    border:2px solid var(--p1);
+    border-radius:18px;
+    box-shadow:0 0 22px rgba(255,61,129,0.45), 0 14px 30px -16px rgba(0,0,0,0.8);
+  }
+  .ticker-bubble::after{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-14px;
+    transform:translateX(-50%);
+    width:0; height:0;
+    border-width:14px 12px 0 12px;
+    border-style:solid;
+    border-color:var(--p1) transparent transparent transparent;
+  }
+  .ticker-bubble::before{
+    content:"";
+    position:absolute;
+    left:50%;
+    bottom:-9px;
+    transform:translateX(-50%);
+    width:0; height:0;
+    border-width:11px 9px 0 9px;
+    border-style:solid;
+    border-color:var(--bg-panel-2) transparent transparent transparent;
+    z-index:1;
+  }
+  .ticker-text{
+    font-family:var(--font-display);
+    font-size:clamp(14px, 4vw, 22px);
+    line-height:1.5;
+    color:var(--p1);
+    text-wrap:balance;
+    text-shadow:0 0 6px rgba(255,61,129,0.9), 0 0 26px rgba(255,61,129,0.6), 0 0 46px rgba(255,61,129,0.35);
+  }
+  .ticker-tag{
+    font-family:var(--font-display);
+    font-size:10px;
+    letter-spacing:0.06em;
+    color:var(--gold);
+    text-shadow:0 0 10px rgba(255,207,77,0.6);
+  }
+  @keyframes ko-impact{
+    0%{ opacity:0; transform:translate(-50%,-50%) scale(2.6); filter:blur(2px); }
+    10%{ opacity:1; transform:translate(-50%,-50%) scale(0.88); filter:blur(0); }
+    16%{ transform:translate(-50%,-50%) scale(1.08); }
+    22%{ transform:translate(-50%,-50%) scale(1); }
+    82%{ opacity:1; transform:translate(-50%,-50%) scale(1); }
+    100%{ opacity:0; transform:translate(-50%,-50%) scale(0.82); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .crt-overlay, .press-start, .terminal .cursor{animation:none;}
+    .popup-toast{transition:none;}
+    .ticker-chip{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="crt-overlay"></div>
+
+<main class="arcade">
+
+  <section class="hero">
+    <div class="combo-counter">23 HIT<br><b>COMBO</b></div>
+    <p class="eyebrow">PLAYER 2 ENTERS THE GAME — AVRIL 2003</p>
+    <h1 class="hero-title">VICTEAM</h1>
+    <p class="hero-sub">23 ans de baston, de loyauté, et d'un seul vrai adversaire qui compte encore aujourd'hui : la vie elle-même. Joyeux anniversaire.</p>
+    <p class="press-start">▶ PRESS START</p>
+  </section>
+
+  <section class="vs-wrap">
+    <p class="eyebrow" style="text-align:center;">ÉCRAN VERSUS</p>
+    <div class="vs-grid">
+      <div class="fighter p1 panel">
+        <div class="badge">L</div>
+        <p class="fighter-name">LIBERTY</p>
+        <div class="hp-row">
+          <div class="hp-label"><span>HP</span><span>100%</span></div>
+          <div class="hp-bar"><div class="hp-fill"></div></div>
+        </div>
+      </div>
+      <div class="vs-mark">VS</div>
+      <div class="fighter p2 panel">
+        <div class="badge">V</div>
+        <p class="fighter-name">VICTEAM</p>
+        <div class="hp-row">
+          <div class="hp-label"><span>HP</span><span>100%</span></div>
+          <div class="hp-bar"><div class="hp-fill"></div></div>
+        </div>
+      </div>
+    </div>
+    <p class="vs-caption">23 ANS AU COMPTEUR. AUCUNE BARRE DE VIE N'A JAMAIS BOUGÉ.</p>
+  </section>
+
+  <section class="stack">
+    <h2 class="section-title">HISTORIQUE DE COMBOS</h2>
+    <div class="combo-card panel">
+      <p class="combo-tag">DUST LOOP DÉBLOQUÉ</p>
+      <p><strong>Merci d'être toi</strong> pour que je sois moi, et merci à moi d'être moi pour que tu restes toi. Que mon Djonathan, Jhonathan, Jonathan et Jennifer ne perdent jamais leur âme d'enfant, et continuent à vivre à fond, comme l'année de notre rencontre, en 2003 ou 2004.</p>
+    </div>
+    <div class="combo-card panel">
+      <p class="combo-tag">TECHNIQUE MAÎTRISÉE — ÊTRE UN PILIER</p>
+      <p>Tu n'es pas un 20/20 ni un 5 étoiles sur 5. Mais entre toutes les histoires que d'autres m'ont racontées sur toi, ta morale, ta personnalité, ton vécu — <strong>mon Proust reste un bon cru</strong>. Millésime 1986, complété par son signe : Vierge, et son année chinoise : le Tigre de Feu. (Pour l'ascendant, il manque l'heure et le lieu de naissance.)</p>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2 class="section-title">SÉLECTION DU STAGE</h2>
+    <div class="stage-grid">
+      <div class="stage-card panel">
+        <p class="stage-index">STAGE 01</p>
+        <p class="stage-name">GUILTY GEAR</p>
+        <p>Toujours dans le haut du classement. Jamais délogé pour de bon.</p>
+      </div>
+      <div class="stage-card panel">
+        <p class="stage-index">STAGE 02</p>
+        <p class="stage-name">MARVEL VS. CAPCOM<br>(1997)</p>
+        <p>Le tout premier. Celui qu'on ne quitte jamais vraiment.</p>
+      </div>
+    </div>
+    <p class="stage-note">Impossible de trancher entre les deux, depuis toujours. Notre amitié, c'est un peu ça : une fidélité <strong>solide et constante</strong>, round après round.</p>
+  </section>
+
+  <section class="stack">
+    <h2 class="section-title">DATE DE NAISSANCE</h2>
+    <div class="terminal panel">
+      <div>&gt; CHARGEMENT DE LA DATE...</div>
+      <div>&gt; 17 ? ... 21 ? ... <span class="cursor">_</span></div>
+      <div>&gt; ERREUR : TROP DE PROCHES NÉS LE MÊME MOIS</div>
+      <div>&gt; CLASSEMENT MEILLEUR AMI : #1 — CONFIRMÉ, MALGRÉ LE BUG</div>
+    </div>
+    <p class="terminal-note">Peu importe si c'est le 17 ou le 21 : dans le doute, on fête toute la semaine.</p>
+  </section>
+
+  <section class="wish panel">
+    <span class="wish-badge">ROUND 3</span>
+    <p>Après toutes ces années de best-of-3, il ne reste qu'un seul vœu pour cet anniversaire : qu'au troisième, ce soit <strong>une vraie Millia</strong>. Vu l'âge d'Eva, tu as le temps. En attendant... GG, et joyeux anniversaire, Victeam.</p>
+  </section>
+
+  <footer>
+    <p>PLAYER 1 : LIBERTY</p>
+    <p class="sign">CONTINUE ? OUI, TOUJOURS.</p>
+  </footer>
+
+</main>
+
+<div class="popup-toast" id="popupToast" role="status" hidden>
+  <button class="popup-close" id="popupClose" aria-label="Fermer la notification" type="button">×</button>
+  <span class="popup-eyebrow">🏆 NOTIFICATION</span>
+  <p class="popup-text" id="popupText">Steuve pour Djonathan, Jhonathan ou Jonathan et Jennifer</p>
+</div>
+
+<script>
+  (function(){
+    var toast = document.getElementById('popupToast');
+    var text = document.getElementById('popupText');
+    var closeBtn = document.getElementById('popupClose');
+    if(!toast || !text) return;
+
+    var ORIGINAL = 'Steuve pour Djonathan, Jhonathan ou Jonathan et Jennifer';
+    var SWAPPED = 'Steeve pour Jonathan';
+    var timer = setTimeout(function(){
+      toast.hidden = false;
+      requestAnimationFrame(function(){ toast.classList.add('is-visible'); });
+    }, 5000);
+
+    toast.addEventListener('mouseenter', function(){ text.textContent = SWAPPED; });
+    toast.addEventListener('mouseleave', function(){ text.textContent = ORIGINAL; });
+
+    if(closeBtn){
+      closeBtn.addEventListener('click', function(e){
+        e.stopPropagation();
+        clearTimeout(timer);
+        toast.classList.remove('is-visible');
+        toast.hidden = true;
+      });
+    }
+  })();
+
+  (function(){
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduceMotion) return;
+
+    var LINES = [
+      { text:'On va résoudre-LE !!' },
+      { text:'GRETAPAAA !' },
+      { text:"C'est vous qui a appellez SheBeurre" },
+      { text:'Salut c\'est Captain america' },
+      { text:"fais pipi à l'envers c'est impressionnant" },
+      { text:"C'est bon, on a remis Mega Upload" },
+      { text:'la puissance de la fonk' },
+      { text:'Rouleau de PQ', tag:'Slayer' },
+      { text:"Je n'ai jamais dis que j'y allais", tag:'Order-Sol' },
+      { text:'Zarma', tag:'Millia Rage' },
+      { text:"Tenshu, tu m'as trompé" },
+      { text:'Courgarde la pêche' }
+    ];
+    var lineIndex = 0;
+
+    function spawnTicker(){
+      var line = LINES[lineIndex % LINES.length];
+      lineIndex++;
+      var chip = document.createElement('div');
+      chip.className = 'ticker-chip';
+      chip.setAttribute('aria-hidden', 'true');
+
+      var topPercent = 22 + Math.floor(Math.random() * 14);
+      chip.style.top = topPercent + '%';
+
+      var bubble = document.createElement('div');
+      bubble.className = 'ticker-bubble';
+
+      var textEl = document.createElement('span');
+      textEl.className = 'ticker-text';
+      textEl.textContent = line.text;
+      bubble.appendChild(textEl);
+
+      if(line.tag){
+        var tagEl = document.createElement('span');
+        tagEl.className = 'ticker-tag';
+        tagEl.textContent = line.tag;
+        bubble.appendChild(tagEl);
+      }
+
+      chip.appendChild(bubble);
+      document.body.appendChild(chip);
+      chip.addEventListener('animationend', function(){ chip.remove(); });
+      setTimeout(function(){ if(chip.parentNode) chip.remove(); }, 3600);
+    }
+
+    setInterval(spawnTicker, 10000);
+  })();
+</script>
+
+</body>
+</html>

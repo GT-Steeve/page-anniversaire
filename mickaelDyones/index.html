@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Team 7 Pour Toujours</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Rubik:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0a0a;
+    --paper:#f3ecd8;
+    --paper-2:#ece2c8;
+    --ink:#1a1512;
+    --muted-ink:#6e6152;
+    --line:#1a1512;
+    --naruto:#ff7a1a;
+    --sakura:#ff3f7e;
+    --sasuke:#d81e2c;
+    --seal:#f2b705;
+    --font-display:'Anton', sans-serif;
+    --font-body:'Rubik', sans-serif;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{background:var(--bg);}
+  body{
+    margin:0;
+    padding-inline:16px;
+    color:var(--ink);
+    font-family:var(--font-body);
+    background:
+      radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1.2px) 0 0 / 7px 7px,
+      var(--bg);
+    overflow-x:hidden;
+    position:relative;
+  }
+  h1,h2,h3{text-wrap:balance; margin:0;}
+  p{margin:0;}
+  img{max-width:100%;}
+  [hidden]{display:none!important;}
+
+  .manga{
+    max-width:920px;
+    margin:0 auto;
+    padding-block: max(28px, env(safe-area-inset-top, 0px)) max(48px, env(safe-area-inset-bottom, 0px));
+    display:flex;
+    flex-direction:column;
+    gap:56px;
+    position:relative;
+    z-index:1;
+  }
+
+  /* ---------- shared bits ---------- */
+  .eyebrow{
+    font-family:var(--font-display);
+    font-size:13px;
+    letter-spacing:0.1em;
+    color:var(--seal);
+    text-transform:uppercase;
+  }
+  .panel{
+    background:var(--paper);
+    border:3px solid var(--ink);
+    border-radius:2px;
+    box-shadow:6px 6px 0 rgba(0,0,0,0.55);
+  }
+  .section-title{
+    font-family:var(--font-display);
+    font-size:clamp(20px, 4.2vw, 30px);
+    letter-spacing:0.02em;
+    color:#fff;
+    text-transform:uppercase;
+    -webkit-text-stroke:1px var(--ink);
+  }
+  .section-title small{
+    display:block;
+    font-family:var(--font-body);
+    font-size:12px;
+    color:var(--muted-ink);
+    -webkit-text-stroke:0;
+    letter-spacing:0.04em;
+    margin-top:2px;
+    color:#c9c2b3;
+  }
+
+  /* ---------- hero ---------- */
+  .hero{
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+    padding-block:28px 12px;
+    position:relative;
+    background:
+      repeating-conic-gradient(from 0deg at 50% 40%, rgba(255,255,255,0.07) 0deg 1.4deg, transparent 1.4deg 7deg);
+    border-radius:8px;
+  }
+  .kanji-mark{
+    font-family:'Rubik', sans-serif;
+    font-size:34px;
+    font-weight:800;
+    color:var(--sasuke);
+    line-height:1;
+    text-shadow:0 0 14px rgba(216,30,44,0.55);
+  }
+  .hero-title{
+    font-family:var(--font-display);
+    font-size:clamp(30px, 8vw, 54px);
+    line-height:1.1;
+    color:var(--naruto);
+    text-transform:uppercase;
+    -webkit-text-stroke:2px var(--ink);
+    text-shadow:4px 4px 0 var(--ink);
+  }
+  .hero-title .amp{color:var(--seal); -webkit-text-stroke:2px var(--ink);}
+  .hero-sub{
+    max-width:540px;
+    font-size:clamp(15px,2.6vw,18px);
+    color:#e9e2d2;
+    line-height:1.6;
+  }
+  .chapter-tag{
+    font-family:var(--font-display);
+    font-size:12px;
+    letter-spacing:0.08em;
+    color:var(--ink);
+    background:var(--seal);
+    padding:5px 14px;
+    border:2px solid var(--ink);
+    border-radius:20px;
+  }
+
+  /* ---------- roster ---------- */
+  .roster-wrap{display:flex; flex-direction:column; gap:18px;}
+  .roster-grid{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:16px;
+  }
+  .ninja-card{padding:20px 18px; display:flex; flex-direction:column; gap:8px;}
+  .ninja-card.naruto{border-color:var(--naruto);}
+  .ninja-card.sakura{border-color:var(--sakura);}
+  .ninja-card.sasuke{border-color:var(--sasuke);}
+  .ninja-alias{
+    font-family:var(--font-display);
+    font-size:22px;
+    letter-spacing:0.02em;
+    text-transform:uppercase;
+  }
+  .ninja-card.naruto .ninja-alias{color:var(--naruto);}
+  .ninja-card.sakura .ninja-alias{color:var(--sakura);}
+  .ninja-card.sasuke .ninja-alias{color:var(--sasuke);}
+  .ninja-real{
+    font-family:var(--font-body);
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    color:var(--muted-ink);
+    text-transform:uppercase;
+  }
+  .ninja-card p.trait{color:var(--ink); font-size:14px; line-height:1.55;}
+  .roster-caption{color:#c9c2b3; font-size:13px; text-align:center; max-width:560px; margin-inline:auto;}
+
+  /* ---------- stack sections ---------- */
+  .stack{display:flex; flex-direction:column; gap:18px;}
+  .story-card{padding:22px; display:flex; flex-direction:column; gap:10px;}
+  .story-tag{
+    font-family:var(--font-display);
+    font-size:12px;
+    letter-spacing:0.03em;
+    color:var(--sakura);
+    text-transform:uppercase;
+  }
+  .story-card p{color:var(--ink); line-height:1.65; font-size:15px;}
+  .story-card p strong{color:var(--sasuke); font-weight:700;}
+
+  /* ---------- ellipse (three paths) ---------- */
+  .path-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:16px;}
+  .path-card{padding:20px; display:flex; flex-direction:column; gap:8px; align-items:flex-start;}
+  .path-index{font-family:var(--font-display); font-size:11px; color:var(--muted-ink); text-transform:uppercase;}
+  .path-name{font-family:var(--font-display); font-size:17px; color:var(--ink); text-transform:uppercase;}
+  .path-card p{color:var(--muted-ink); font-size:13.5px; line-height:1.55;}
+
+  /* ---------- training ground ---------- */
+  .training{padding:24px; display:flex; flex-direction:column; gap:12px;}
+  .training p{color:var(--ink); font-size:15px; line-height:1.65;}
+  .training p strong{color:var(--naruto);}
+
+  /* ---------- ultimate wish ---------- */
+  .wish{padding:30px 26px; text-align:center; display:flex; flex-direction:column; gap:14px; align-items:center;}
+  .wish-badge{
+    font-family:var(--font-display);
+    font-size:13px;
+    letter-spacing:0.04em;
+    color:var(--paper);
+    background:var(--sasuke);
+    padding:7px 16px;
+    border:2px solid var(--ink);
+    border-radius:20px;
+    text-transform:uppercase;
+  }
+  .wish p{max-width:560px; color:var(--ink); font-size:16px; line-height:1.65;}
+  .wish p strong{color:var(--sakura);}
+
+  /* ---------- footer ---------- */
+  footer{
+    text-align:center;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    color:#c9c2b3;
+    font-size:12px;
+    padding-bottom:8px;
+  }
+  footer .sign{font-family:var(--font-display); font-size:13px; color:var(--seal); letter-spacing:0.04em;}
+
+  @media (max-width:700px){
+    .roster-grid, .path-grid{grid-template-columns:1fr;}
+  }
+
+  @media (max-width:640px){
+    .manga{gap:40px; padding-block: max(20px, env(safe-area-inset-top, 0px)) max(36px, env(safe-area-inset-bottom, 0px));}
+    .story-card, .training{padding:18px;}
+    .wish{padding:22px 18px;}
+    .ninja-card, .path-card{padding:16px;}
+  }
+</style>
+</head>
+<body>
+
+<main class="manga">
+
+  <section class="hero">
+    <div class="kanji-mark">忍</div>
+    <span class="chapter-tag">CHAPITRE UNIQUE — TEAM 7 AU GRAND COMPLET</span>
+    <p class="eyebrow">RÉUNION DE TEAM 7 — DEPUIS LE LYCÉE</p>
+    <h1 class="hero-title">MICKAEL <span class="amp">&amp;</span> DYONES</h1>
+    <p class="hero-sub">Depuis le lycée, le pouvoir de l'amitié nous a gardés réunis — épreuve après épreuve, année après année. Joyeux anniversaire à toute l'équipe.</p>
+  </section>
+
+  <section class="roster-wrap">
+    <h2 class="section-title">Feuille de mission<small>TEAM 7 — IDENTIFICATION</small></h2>
+    <div class="roster-grid">
+      <div class="ninja-card naruto panel">
+        <p class="ninja-alias">Naruto</p>
+        <p class="ninja-real">alias de Liberty</p>
+        <p class="trait">Nindo : ne jamais lâcher les jeux à l'ancienne. Techniques interdites : Guilty Gear et BlazBlue — toujours intouchable dessus.</p>
+      </div>
+      <div class="ninja-card sakura panel">
+        <p class="ninja-alias">Sakura</p>
+        <p class="ninja-real">alias de Mickael</p>
+        <p class="trait">Un seul rêve encore en suspens : parler à Gaara, pour enfin savoir si le Bijū est toujours en lui.</p>
+      </div>
+      <div class="ninja-card sasuke panel">
+        <p class="ninja-alias">Sasuke</p>
+        <p class="ninja-real">alias de Dyones</p>
+        <p class="trait">Le Sharingan de son frère Itachi reste toujours allumé.</p>
+      </div>
+    </div>
+    <p class="roster-caption">Réunis depuis le lycée. Une équipe, envers et contre toutes les épreuves.</p>
+  </section>
+
+  <section class="stack">
+    <h2 class="section-title">Lien de l'équipe<small>JUTSU DÉBLOQUÉ</small></h2>
+    <div class="story-card panel">
+      <p class="story-tag">Le pouvoir de l'amitié</p>
+      <p>Le pouvoir de l'amitié nous a gardés réunis, envers et contre toutes les épreuves, toutes ces années. <strong>Merci Sakura, merci Mickael</strong>, de nous avoir permis à tous de décrocher notre premier poste, en tant qu'AED. Sans toi, l'équipe n'aurait pas commencé pareil.</p>
+    </div>
+  </section>
+
+  <section class="stack">
+    <h2 class="section-title">Après l'ellipse<small>TROIS CHEMINS, UNE ÉQUIPE</small></h2>
+    <div class="path-grid">
+      <div class="path-card panel">
+        <p class="path-index">Sakura</p>
+        <p class="path-name">CPE</p>
+        <p>Après l'ellipse, Sakura est devenue Conseillère Principale d'Éducation.</p>
+      </div>
+      <div class="path-card panel">
+        <p class="path-index">Sasuke</p>
+        <p class="path-name">Plombier</p>
+        <p>Sasuke, lui, est devenu plombier — chidori en main, il continue de faire du minage.</p>
+      </div>
+      <div class="path-card panel">
+        <p class="path-index">Naruto</p>
+        <p class="path-name">Gamer jusqu'au bout</p>
+        <p>Naruto, toujours fidèle à son nindo, reste plongé dans le gaming à l'ancienne.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="training panel">
+    <h2 class="section-title" style="margin-bottom:4px;">Terrain d'entraînement</h2>
+    <p>Sur le terrain, <strong>Naruto</strong> reste intouchable à Guilty Gear et BlazBlue. Mais sur FIFA et Naruto Storm, un seul ninja sait encore le faire tomber : Sakura.</p>
+  </section>
+
+  <section class="wish panel">
+    <span class="wish-badge">Rêve ultime</span>
+    <p>Un jour, peut-être, <strong>Sakura</strong> aura enfin sa réponse : le Bijū de Gaara est-il toujours scellé en lui ? En attendant... joyeux anniversaire, Team 7.</p>
+  </section>
+
+  <footer>
+    <p>PLAYER 1 : NARUTO (LIBERTY)</p>
+    <p class="sign">LE POUVOIR DE L'AMITIÉ, TOUJOURS.</p>
+  </footer>
+
+</main>
+
+</body>
+</html>
